@@ -1,0 +1,107 @@
+@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Registro";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center align-items-center min-vh-100 py-4">
+        <div class="col-12 col-xl-10 col-xxl-8">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-lg-5 p-4">
+                    <div class="text-center mb-5">
+                        <h1 class="fw-bold mb-2">Crear Cuenta</h1>
+
+                        <p class="text-secondary mb-0">
+                            Complete los datos para registrarse en el sistema
+                        </p>
+                    </div>
+
+                    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                        <div class="mb-4">
+                            <h5 class="fw-semibold border-bottom pb-2 mb-4">Datos Personales</h5>
+                            <div class="row">
+                                <div class="col-md-6 col-lg-3 mb-3">
+                                    <div class="form-floating">
+                                        <input asp-for="Input.Dni" class="form-control" placeholder="DNI sin puntos" maxlength="8" pattern="\d{1,8}" data-filter="numbers" />
+                                        <label asp-for="Input.Dni">DNI</label>
+                                    </div>
+                                    <span asp-validation-for="Input.Dni" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6 col-lg-3 mb-3">
+                                    <div class="form-floating">
+                                        <input asp-for="Input.Nombre" class="form-control" placeholder="Nombre" maxlength="50" data-filter="letters" />
+                                        <label asp-for="Input.Nombre">Nombre</label>
+                                    </div>
+                                    <span asp-validation-for="Input.Nombre" class="text-danger small">
+                                    </span>
+                                </div>
+
+                                <div class="col-md-6 col-lg-3 mb-3">
+                                    <div class="form-floating">
+                                        <input asp-for="Input.Apellido" class="form-control" placeholder="Apellido" maxlength="50" data-filter="letters" />
+                                        <label asp-for="Input.Apellido">Apellido</label>
+                                    </div>
+                                    <span asp-validation-for="Input.Apellido" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h5 class="fw-semibold border-bottom pb-2 mb-4">Datos Académicos</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-floating">
+                                        <input asp-for="Input.Carrera" class="form-control" placeholder="Carrera" maxlength="100" />
+                                        <label asp-for="Input.Carrera">Carrera</label>
+                                    </div>
+                                    <span asp-validation-for="Input.Carrera" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h5 class="fw-semibold border-bottom pb-2 mb-4">Datos de Acceso</h5>
+                            <div class="row">
+                                <div class="col-lg-6 mb-3">
+                                    <div class="form-floating">
+                                        <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="Email" maxlength="100" />
+                                        <label asp-for="Input.Email">Email</label>
+                                    </div>
+                                    <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-lg-3 mb-3">
+                                    <div class="form-floating">
+                                        <input asp-for="Input.Password" class="form-control" autocomplete="new-password" />
+                                        <label asp-for="Input.Password">Contraseña</label>
+                                    </div>
+                                    <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-lg-3 mb-3">
+                                    <div class="form-floating">
+                                        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" />
+                                        <label asp-for="Input.ConfirmPassword">Confirmar Contraseña</label>
+                                    </div>
+                                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a asp-page="./Login" class="btn btn-outline-secondary btn-lg rounded-3 fw-semibold px-4"><i class="bi bi-arrow-left me-1"></i> Volver</a>
+                            <button id="registerSubmit" type="submit" class="btn btn-primary btn-lg rounded-3 fw-semibold px-4"><i class="bi bi-person-plus me-1"></i> Crear Cuenta</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
