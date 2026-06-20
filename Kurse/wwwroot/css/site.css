@@ -1,0 +1,223 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+    color: var(--bs-secondary-color);
+    text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+    text-align: start;
+}
+
+/*------------------------------------Estilos Personalizados------------------------------------*/
+/*--------------------------------------------Layout--------------------------------------------*/
+.sidebar {
+    background-color: #1a1d20;
+    width: 250px;
+    min-height: 100vh;
+}
+
+    .sidebar .nav-link {
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+        .sidebar .nav-link:hover {
+            background-color: #2b3035;
+        }
+
+    .sidebar.collapsed {
+        width: 85px;
+    }
+
+        .sidebar.collapsed .sidebar-text {
+            display: none;
+        }
+
+        .sidebar.collapsed .nav-link {
+            justify-content: center;
+        }
+
+    .sidebar .nav-link.active-sidebar {
+        background-color: rgba(255,255,255,.12);
+        border-radius: 12px;
+        font-weight: 600;
+    }
+
+    .sidebar .nav-link:hover {
+        background-color: rgba(255,255,255,.08);
+        border-radius: 12px;
+    }
+
+@media (max-width: 992px) {
+    .sidebar {
+        width: 80px;
+    }
+
+        .sidebar .sidebar-text {
+            display: none;
+        }
+
+        .sidebar .nav-link {
+            justify-content: center;
+        }
+}
+
+.topbar {
+    background-color: #2b3035;
+    border-bottom: 1px solid #3a3f44;
+}
+/*------------------------------------------DataTables------------------------------------------*/
+table.dataTable thead th {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+table.dataTable tbody td {
+    text-align: center;
+    vertical-align: middle !important;
+}
+
+/* Celdas DataTable */
+table.dataTable td {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+    /* Inputs y selects */
+    table.dataTable td input, table.dataTable td select {
+        text-align: center !important;
+    }
+
+/* Inputs number */
+table.dataTable input[type=number] {
+    text-align: center !important;
+}
+
+/* Contenedor de DataTables */
+.dataTables_wrapper .form-control, .dataTables_wrapper .form-select {
+    text-align: center !important;
+}
+/*------------------------------------------SweetAlert------------------------------------------*/
+.swal-dark {
+    background: #1e1e2f !important;
+    color: #f1f1f1 !important;
+    border: 1px solid #343a40;
+}
+
+    .swal-dark .swal2-title,
+    .swal-dark .swal2-html-container {
+        color: #f1f1f1 !important;
+    }
+
+    .swal-dark .swal2-confirm {
+        background-color: #dc3545 !important;
+    }
+
+    .swal-dark .swal2-cancel {
+        background-color: #6c757d !important;
+    }
+/*--------------------------------------------Modales-------------------------------------------*/
+.detail-card {
+    transition: all .2s ease;
+    border: 1px solid rgba(255,255,255,.08);
+}
+
+    .detail-card .card-title {
+        font-size: .8rem;
+        color: var(--bs-secondary-color);
+        text-transform: uppercase;
+        letter-spacing: .5px;
+    }
+
+.btn-acta {
+    background-color: #6f42c1;
+    border-color: #6f42c1;
+    color: white;
+}
+
+    .btn-acta:hover {
+        background-color: #5a32a3;
+        border-color: #5a32a3;
+        color: white;
+    }
+
+.btn-baja {
+    background-color: #dc5a6a;
+    border-color: #dc5a6a;
+    color: white;
+}
+
+    .btn-baja:hover {
+        background-color: #c94a5a;
+        border-color: #c94a5a;
+        color: white;
+    }
+
+/*---------------------------------------Oferta Académica---------------------------------------*/
+.curso-card {
+    border: 1px solid rgba(255,255,255,.08);
+    transition: all .25s ease;
+    overflow: hidden;
+}
+
+    .curso-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 1rem 2rem rgba(0,0,0,.35);
+    }
+
+.curso-banner {
+    height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    background: linear-gradient( 135deg, rgba(13,110,253,.20), rgba(13,110,253,.05) );
+}
+
+.icon-circle {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: 50%;
+    background: rgba(13,110,253,.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+}
+
+.progress {
+    height: 8px;
+    border-radius: 20px;
+}
+
+.progress-bar {
+    border-radius: 20px;
+}
+
+.bg-purple {
+    background-color: #6f42c1;
+}
