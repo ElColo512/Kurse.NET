@@ -1,0 +1,44 @@
+﻿@model CreateUserViewModel
+@{
+    ViewData["Title"] = "Crear Usuario";
+    var roles = ViewBag.Roles as List<string>;
+}
+
+<div class="container">
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h3 class="mb-0">@ViewData["Title"]</h3>
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <partial name="_UsuarioForm" model="Model" />
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" type="password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="ConfirmPassword" class="form-label"></label>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left me-1"></i> Volver</a>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-floppy me-1"></i> Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        initializeRolFields('#rolSelect', '#tituloContainer', '#carreraContainer');
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}

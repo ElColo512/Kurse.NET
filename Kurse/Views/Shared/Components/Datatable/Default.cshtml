@@ -1,0 +1,20 @@
+﻿@model DataTableViewModel
+
+<table id="@Model.TableId" class="display w-100">
+    <thead>
+        <tr>
+            @foreach (var column in Model.Columns)
+            {
+                <th>@column</th>
+            }
+
+            @if (Model.ShowActions)
+            {
+                <th>Acciones</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        <!-- DataTables AJAX -->
+    </tbody>
+</table>

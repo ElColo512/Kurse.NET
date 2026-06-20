@@ -1,0 +1,51 @@
+﻿@model UserDetailsViewModel
+@{
+    ViewData["Title"] = "Detalle Usuario";
+}
+<div class="modal-header">
+    <h5 class="modal-title">@ViewData["Title"]</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Legajo</label>
+            <input class="form-control" value="@Model.Legajo" readonly disabled />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Rol</label>
+            <input class="form-control" value="@Model.Rol" readonly disabled />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Nombre y Apellido</label>
+            <input class="form-control" value="@Model.NombreApellido" readonly disabled />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">DNI</label>
+            <input class="form-control" value="@Model.Dni" readonly disabled />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Email</label>
+            <input class="form-control" value="@Model.Email" readonly disabled />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Teléfono</label>
+            <input class="form-control" value="@Model.PhoneNumber" readonly disabled />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            <label class="form-label">@(Model.Rol == "Alumno" ? "Carrera" : "Título")</label>
+            <input class="form-control" value="@(Model.Rol == "Alumno" ? Model.Carrera : Model.Titulo)" readonly disabled />
+        </div>
+    </div>
+</div>

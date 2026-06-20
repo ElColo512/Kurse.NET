@@ -1,0 +1,180 @@
+﻿@model BaseCursoViewModel
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+<div class="row g-4">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-transparent">
+                <h6 class="mb-0"><i class="bi bi-journal-bookmark me-2"></i> Información General</h6>
+            </div>
+
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label asp-for="Codigo" class="form-label"></label>
+                        <input asp-for="Codigo" class="form-control" placeholder="Ej: EC2026" maxlength="20" />
+                        <span asp-validation-for="Codigo" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-9">
+                        <label asp-for="NombreCurso" class="form-label"></label>
+                        <input asp-for="NombreCurso" class="form-control" maxlength="100" />
+                        <span asp-validation-for="NombreCurso" class="text-danger"></span>
+                    </div>
+
+                    @if (!User.IsInRole(RoleConstants.Profesor))
+                    {
+                        <div class="col-md-6">
+                            <label asp-for="IdProfesor" class="form-label">Profesor</label>
+                            <select asp-for="IdProfesor" asp-items="ViewBag.Profesores" class="form-select">
+                                <option value="">Seleccione un profesor</option>
+                            </select>
+                            <span asp-validation-for="IdProfesor" class="text-danger"></span>
+                        </div>
+                    }
+
+                    <div class="col-md-6">
+                        <label asp-for="LugarDictado" class="form-label"></label>
+                        <input asp-for="LugarDictado" class="form-control" placeholder="Ej: Aula 5 - Sede Central" />
+                        <span asp-validation-for="LugarDictado" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-transparent">
+                <h6 class="mb-0"><i class="bi bi-calendar-event me-2"></i> Programación del Curso</h6>
+            </div>
+
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label asp-for="FechaInicio" class="form-label"></label>
+                        <input asp-for="FechaInicio" type="date" class="form-control" />
+                        <span asp-validation-for="FechaInicio" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label asp-for="FechaFin" class="form-label"></label>
+                        <input asp-for="FechaFin" type="date" class="form-control" />
+                        <span asp-validation-for="FechaFin" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label asp-for="HoraInicio" class="form-label"></label>
+                        <input asp-for="HoraInicio" type="time" class="form-control" />
+                        <span asp-validation-for="HoraInicio" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label asp-for="HoraFin" class="form-label"></label>
+                        <input asp-for="HoraFin" type="time" class="form-control" />
+                        <span asp-validation-for="HoraFin" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <hr />
+
+                <label class="form-label fw-semibold">Días de Dictado</label>
+                <div class="row">
+                    @foreach (DiaSemana dia in Enum.GetValues<DiaSemana>())
+                    {
+                        <div class="col-md-3 col-sm-6 mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="DiasDictado" value="@((int)dia)" id="dia_@dia" @(Model.DiasDictado.Contains(dia) ? "checked" : null) />
+                                <label class="form-check-label" for="dia_@dia">@dia</label>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-transparent">
+                <h6 class="mb-0"><i class="bi bi-mortarboard me-2"></i> Configuración Académica</h6>
+            </div>
+
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label asp-for="CupoMaximo" class="form-label"></label>
+                        <input asp-for="CupoMaximo" class="form-control" />
+                        <span asp-validation-for="CupoMaximo" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label asp-for="CantidadClases" class="form-label"></label>
+                        <input asp-for="CantidadClases" class="form-control" />
+                        <span asp-validation-for="CantidadClases" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label asp-for="DuracionHoras" class="form-label"></label>
+                        <div class="input-group">
+                            <input asp-for="DuracionHoras" class="form-control" />
+                            <span class="input-group-text">hs</span>
+                        </div>
+                        <span asp-validation-for="DuracionHoras" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label asp-for="TipoAprobacion" class="form-label"></label>
+                        <select asp-for="TipoAprobacion" asp-items="ViewBag.TiposAprobacion" class="form-select">
+                            <option value="">Seleccione un tipo</option>
+                        </select>
+                        <span asp-validation-for="TipoAprobacion" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-transparent">
+                <h6 class="mb-0"><i class="bi bi-cash-stack me-2"></i> Información Económica</h6>
+            </div>
+
+            <div class="card-body">
+                <div class="d-flex flex-wrap align-items-center gap-4">
+                    <div class="form-check form-switch">
+                        <input asp-for="Arancelado" class="form-check-input" id="chkArancelado" />
+                        <label asp-for="Arancelado" class="form-check-label"></label>
+                    </div>
+
+                    <div id="contenedorArancel" class="d-none d-flex align-items-center gap-2">
+                        <label asp-for="Arancel" class="form-label mb-0"></label>
+                        <div class="input-group" style="max-width:180px;">
+                            <span class="input-group-text">$</span>
+                            <input asp-for="Arancel" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <span asp-validation-for="Arancel" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="accordion" id="accordionContenido">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#contenidoCollapse">Contenido del Curso</button>
+                </h2>
+
+                <div id="contenidoCollapse" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <textarea asp-for="ContenidoCurso" rows="5" class="form-control" maxlength="1000"></textarea>
+                        <span asp-validation-for="ContenidoCurso" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,64 @@
+﻿@model HistoriaAcademicaViewModel
+
+<div class="container-fluid">
+    <div class="mb-4">
+        <h2 class="fw-bold">Mi Historia Académica</h2>
+        <p class="text-secondary mb-0">
+            Consulta tu desempeño académico y descarga tus certificados.
+        </p>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-3 mb-3">
+            <div class="card text-center shadow-sm h-100">
+                <div class="card-body">
+                    <h2 class="fw-bold">@Model.TotalCursos</h2>
+                    <small class="text-secondary">Cursos Inscriptos</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-center shadow-sm h-100">
+                <div class="card-body">
+                    <h2 class="fw-bold text-success">@Model.CursosAprobados</h2>
+                    <small class="text-secondary">Aprobados</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-center shadow-sm h-100">
+                <div class="card-body">
+                    <h2 class="fw-bold text-primary">@Model.CursosEnCurso</h2>
+                    <small class="text-secondary">En Curso</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-center shadow-sm h-100">
+                <div class="card-body">
+                    <h2 class="fw-bold text-warning">@Model.PromedioGeneral</h2>
+                    <small class="text-secondary">Promedio</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.CursosActivos.Any())
+    {
+        <h4 class="mb-3">Cursos en Curso</h4>
+        <div class="row g-4 mb-5">
+            @foreach (var curso in Model.CursosActivos)
+            {
+                <partial name="_HistoriaCursoCard" model="curso" />
+            }
+        </div>
+    }
+
+    <h4 class="mb-3">Cursos Finalizados</h4>
+    <div class="row g-4">
+        @foreach (var curso in Model.CursosFinalizados)
+        {
+            <partial name="_HistoriaCursoCard" model="curso" />
+        }
+    </div>
+</div>

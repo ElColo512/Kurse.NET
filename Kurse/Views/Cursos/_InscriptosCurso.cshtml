@@ -1,0 +1,58 @@
+﻿@model CursoInscriptosViewModel
+
+<form id="formInscribirAlumno">
+    <input type="hidden" name="cursoId" value="@Model.CursoId" />
+    <div class="modal-header">
+        <h5 class="modal-title">Alumnos Inscriptos</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    @if (Model.EstaFinalizado)
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-lock-fill me-2"></i>
+            El curso se encuentra finalizado. No se permiten nuevas inscripciones.
+        </div>
+    }
+
+    <div class="modal-body">
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Curso</label>
+            <input class="form-control" value="@Model.NombreCurso" readonly disabled />
+        </div>
+
+        <div class="row g-2 align-items-end mb-4">
+            <div class="col-md-9">
+                <label class="form-label">Alumno</label>
+                <select name="alumnoId" class="form-select" required asp-items="Model.AlumnosDisponibles" disabled="@Model.EstaFinalizado">
+                    <option value="">Seleccione un alumno</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                @if (!Model.EstaFinalizado)
+                {
+                    <button type="submit" class="btn btn-success w-100"><i class="bi bi-plus-circle me-1"></i> Inscribir</button>
+                }
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <div class="mt-2">
+                @await Component.InvokeAsync("DataTable", new DataTableViewModel
+                {
+                    TableId = "tablaInscriptos",
+                    Columns = new()
+                        {
+                            "Alumno",
+                            "Email",
+                            "Fecha Inscripción"
+                        }
+                })
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+    </div>
+</form>

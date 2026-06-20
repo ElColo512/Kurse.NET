@@ -1,0 +1,54 @@
+﻿@model BaseUserViewModel
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="Dni" class="form-label"></label>
+        <input asp-for="Dni" class="form-control" placeholder="DNI sin puntos" maxlength="8" pattern="\d{1,8}" data-filter="numbers" />
+        <span asp-validation-for="Dni" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label asp-for="Nombre" class="form-label"></label>
+        <input asp-for="Nombre" class="form-control" maxlength="50" data-filter="letters" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label asp-for="Apellido" class="form-label"></label>
+        <input asp-for="Apellido" class="form-control" maxlength="50" data-filter="letters" />
+        <span asp-validation-for="Apellido" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control" maxlength="100" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label asp-for="PhoneNumber" class="form-label"></label>
+        <input asp-for="PhoneNumber" class="form-control" maxlength="20" data-filter="numbers" />
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label asp-for="Rol" class="form-label"></label>
+        <select asp-for="Rol" asp-items="ViewBag.Roles" id="rolSelect" class="form-select">
+            <option value="">Seleccione un rol</option>
+        </select>
+        <span asp-validation-for="Rol" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6 mb-3 d-none" id="tituloContainer">
+        <label asp-for="Titulo" class="form-label"></label>
+        <input asp-for="Titulo" class="form-control" maxlength="100" />
+        <span asp-validation-for="Titulo" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6 mb-3 d-none" id="carreraContainer">
+        <label asp-for="Carrera" class="form-label"></label>
+        <input asp-for="Carrera" class="form-control" maxlength="100" />
+        <span asp-validation-for="Carrera" class="text-danger"></span>
+    </div>
+</div>

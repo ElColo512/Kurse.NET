@@ -1,0 +1,36 @@
+﻿@model EditCursoViewModel
+@{
+    ViewData["Title"] = "Editar Curso";
+    bool soloLectura = Model.EstadoCurso == EstadoCurso.Cancelado;
+}
+
+<div class="modal-header">
+    <h5 class="modal-title">@ViewData["Title"]</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+
+<div class="modal-body">
+    <form id="formEditCurso" asp-action="Edit" method="post">
+        <input asp-for="CursoId" type="hidden" />
+        @if (soloLectura)
+        {
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>  Este curso se encuentra cancelado y no puede modificarse.
+            </div>
+        }
+        <fieldset disabled="@soloLectura">
+            <partial name="_CursoForm" model="Model" />
+        </fieldset>
+        <div class="d-flex justify-content-end gap-2 mt-4">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg me-1"></i> Cancelar</button>
+            <button type="submit" class="btn btn-primary" disabled="@soloLectura"><i class="bi bi-floppy me-1"></i> Guardar Cambios</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        initializeToggleField('#chkArancelado', '#contenedorArancel', '#Arancel');
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}

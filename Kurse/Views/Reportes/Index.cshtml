@@ -1,0 +1,482 @@
+﻿@model ReportesIndexViewModel
+@{
+    ViewData["Title"] = "Reportes";
+    DateTime fechaHasta = DateTime.Today.AddDays(1);
+    DateTime fechaDesde = fechaHasta.AddMonths(-1);
+}
+
+<div class="container-fluid">
+    <div class="mb-4">
+        <h2 class="fw-bold mb-1">Reportes</h2>
+        <p class="text-muted mb-0">
+            Consultas y estadísticas generales del sistema.
+        </p>
+    </div>
+    @if (!User.IsInRole(RoleConstants.Profesor))
+    {
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card bg-dark border-secondary shadow rounded-4 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted">Alumnos</h6>
+                                <h2 class="fw-bold mb-0">@Model.Dashboard.TotalAlumnos</h2>
+                            </div>
+                            <i class="bi bi-mortarboard-fill fs-1 text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card bg-dark border-secondary shadow rounded-4 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted">Profesores</h6>
+                                <h2 class="fw-bold mb-0">@Model.Dashboard.TotalProfesores</h2>
+                            </div>
+                            <i class="bi  bi-person-workspace fs-1 text-danger"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card bg-dark border-secondary shadow rounded-4 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted">Cursos</h6>
+                                <h2 class="fw-bold mb-0">@Model.Dashboard.TotalCursos</h2>
+                            </div>
+                            <i class="bi bi-journal-bookmark-fill fs-1 text-success"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card bg-dark border-secondary shadow rounded-4 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted">Inscripciones</h6>
+                                <h2 class="fw-bold mb-0">@Model.Dashboard.TotalInscripciones</h2>
+                            </div>
+                            <i class="bi bi-pencil-square fs-1 text-warning"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="card bg-dark border-secondary shadow rounded-4 mb-4">
+        <div class="card-header border-0 pt-4 px-4">
+            <h5 class="fw-bold mb-1">Filtros de Reporte</h5>
+            <p class="text-muted mb-0">
+                Seleccione un reporte para comenzar.
+            </p>
+        </div>
+
+        <div class="card-body">
+            <div class="row justify-content-center">
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Tipo Reporte</label>
+                    <select id="tipoReporte" class="form-select">
+                        <option value="">Seleccione un reporte</option>
+                        @if (!User.IsInRole(RoleConstants.Profesor))
+                        {
+                            <option value="cursos">Cursos</option>
+                            <option value="usuarios">Usuarios</option>
+                        }
+                        <option value="inscriptos">Inscriptos por Curso</option>
+                        <option value="notas">Notas por Curso</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="panelFiltros" style="display:none;">
+                <hr />
+                <div class="row justify-content-center g-4 mb-4">
+                    <div class="col-md-3" id="contenedorCurso" style="display:none;">
+                        <label class="form-label fw-semibold">Curso</label>
+                        <select id="cursoId" class="form-select">
+                            <option value="">Todos los cursos</option>
+                            @foreach (var curso in Model.Cursos)
+                            {
+                                <option value="@curso.Value">@curso.Text</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-3" id="contenedorRol" style="display:none;">
+                        <label class="form-label fw-semibold">Rol</label>
+                        <select id="rolUsuario" class="form-select">
+                            <option value="">Todos</option>
+                            <option value="@RoleConstants.Alumno">Alumnos</option>
+                            <option value="@RoleConstants.Profesor">Profesores</option>
+                            @if (User.IsInRole(RoleConstants.Administrador))
+                            {
+                                <option value="@RoleConstants.Administrativo">Administrativos</option>
+                                <option value="@RoleConstants.Administrador">Administradores</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-3" id="contenedorFechaDesde" style="display:none;">
+                        <label class="form-label fw-semibold">Fecha Desde</label>
+                        <input type="date" id="fechaDesde" class="form-control" value="@fechaDesde.ToString("yyyy-MM-dd")" />
+                    </div>
+
+                    <div class="col-md-3" id="contenedorFechaHasta" style="display:none;">
+                        <label class="form-label fw-semibold">Fecha Hasta</label>
+                        <input type="date" id="fechaHasta" class="form-control" value="@fechaHasta.ToString("yyyy-MM-dd")" />
+                    </div>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col-md-2">
+                        <button id="btnGenerarReporte" class="btn btn-primary w-100" disabled><i class="bi bi-search me-1"></i> Generar</button>
+                    </div>
+
+                    <div class="col-md-2">
+                        <button type="button" id="btnPdf" disabled class="btn btn-outline-danger w-100"><i class="bi bi-file-earmark-pdf me-1"></i> PDF</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-dark border-secondary shadow rounded-4">
+        <div class="card-header border-0 pt-4 px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="fw-bold mb-1">Resultado del Reporte</h5>
+                    <p id="subtituloReporte" class="text-muted mb-0">
+                        Información generada según los filtros seleccionados.
+                    </p>
+                </div>
+                <span id="totalRegistros" class="badge bg-primary fs-6">0 registros</span>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div id="mensajeInicial" class="text-center py-5">
+                <i class="bi bi-bar-chart-line display-4 text-muted"></i><h5 class="mt-3"> Seleccione un reporte</h5>
+                <p class="text-muted mb-0">
+                    Elija un reporte para visualizar la información.
+                </p>
+            </div>
+
+            <div id="contenedorTabla" style="display:none;">
+                <table id="tablaReportes" class="display w-100">
+                    <thead>
+                        <tr></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            let tablaReportes = null;
+
+            // =====================================================
+            // HELPERS
+            // =====================================================
+            const renderEstado = activo => activo ? '<span class="badge bg-success">Activo</span>' : '<span class="badge bg-danger">Inactivo</span>';
+            const columnaFecha = campo => ({data: campo, render: d => formatDate(d)});
+
+            function obtenerContexto() {
+                return {
+                    tipo: $('#tipoReporte').val(),
+                    cursoId: $('#cursoId').val(),
+                    rol: $('#rolUsuario').val(),
+                    fechaDesde: $('#fechaDesde').val(),
+                    fechaHasta: $('#fechaHasta').val()
+                };
+            }
+
+            // =====================================================
+            // COLUMNAS REUTILIZABLES
+            // =====================================================
+            const columnasUsuarioBase = [
+                { data: 'legajo' },
+                { data: 'nombreCompleto' },
+                { data: 'dni' },
+                { data: 'email' },
+                { data: 'telefono' }
+            ];
+
+            const columnaEstadoUsuario = {
+                data: 'activo',
+                render: renderEstado
+            };
+
+            const columnasInscriptosBase = [
+                { data: 'legajo' },
+                { data: 'alumno' },
+                { data: 'email' },
+                columnaFecha('fechaInscripcion'),
+                { data: 'estadoAcademico' }
+            ];
+
+            // =====================================================
+            // CONFIGURADORES DE REPORTES
+            // =====================================================
+            function configurarCursos(ctx) {
+                return {
+                    url: `/Reportes/GetCursos?fechaDesde=${ctx.fechaDesde}&fechaHasta=${ctx.fechaHasta}`,
+                    headers: ['Código', 'Curso', 'Profesor', 'Inicio', 'Fin', 'Días', 'Horario', 'Horas', 'Inscriptos', 'Estado'],
+                    columns: [
+                        { data: 'codigo' },
+                        { data: 'curso' },
+                        { data: 'profesor' },
+                        columnaFecha('fechaInicio'),
+                        columnaFecha('fechaFin'),
+                        { data: 'diasDictado' },
+                        { data: 'horario' },
+                        { data: 'duracionHoras' },
+                        { data: 'cantidadInscriptos' },
+                        { data: 'estado' }
+                    ]
+                };
+            }
+
+            function configurarUsuarios(ctx) {
+                const rolTexto = $('#rolUsuario option:selected').text();
+
+                if (ctx.rol) {
+                    $('#subtituloReporte').text(`Rol seleccionado: ${rolTexto}`);
+
+                    return {
+                        url: `/Reportes/GetUsuarios?rol=${ctx.rol}`,
+                        headers: ['Legajo', 'Nombre', 'DNI', 'Email', 'Teléfono', 'Estado'],
+                        columns: [
+                            ...columnasUsuarioBase,
+                            columnaEstadoUsuario
+                        ]
+                    };
+                }
+
+                $('#subtituloReporte').text('Listado general de usuarios.');
+
+                return {
+                    url: '/Reportes/GetUsuarios',
+                    headers: ['Legajo', 'Nombre', 'DNI', 'Email', 'Teléfono', 'Rol', 'Estado'],
+                    columns: [
+                        ...columnasUsuarioBase,
+                        { data: 'rol' },
+                        columnaEstadoUsuario
+                    ]
+                };
+            }
+
+            function configurarInscriptos(ctx) {
+                const cursoTexto = $('#cursoId option:selected').text();
+
+                if (ctx.cursoId) {
+                    $('#subtituloReporte').text(`Curso seleccionado: ${cursoTexto}`);
+
+                    return {
+                        url: `/Reportes/GetInscriptos?cursoId=${ctx.cursoId}`,
+                        headers: ['Legajo', 'Alumno', 'Email', 'Fecha', 'Estado'],
+                        columns: columnasInscriptosBase
+                    };
+                }
+
+                $('#subtituloReporte').text('Información generada según los filtros seleccionados.');
+
+                return {
+                    url: '/Reportes/GetInscriptos',
+                    headers: ['Curso', 'Legajo', 'Alumno', 'Email', 'Fecha', 'Estado'],
+                    columns: [
+                        { data: 'curso' },
+                        ...columnasInscriptosBase
+                    ]
+                };
+            }
+
+            function configurarNotas(ctx) {
+                const cursoTexto = $('#cursoId option:selected').text();
+
+                if (ctx.cursoId) {
+                    $('#subtituloReporte').text(`Curso seleccionado: ${cursoTexto}`);
+
+                    return {
+                        url: `/Reportes/GetNotas?cursoId=${ctx.cursoId}`,
+                        headers: ['Legajo', 'Alumno', 'Asistencia', 'Nota', 'Estado'],
+                        columns: [
+                            { data: 'legajo' },
+                            { data: 'alumno' },
+                            {
+                                data: null,
+                                render: function (row) {
+                                    const pct = (row.clasesAsistidas * 100) / row.totalClases;
+                                    if (row.totalClases === 0) return '0/0 (0%)';
+                                    return `${row.clasesAsistidas}/${row.totalClases} (${pct.toFixed(0)}%)`;
+                                }
+                            },
+                            { data: 'notaFinal' },
+                            { data: 'estado' }
+                        ]
+                    };
+                }
+
+                $('#subtituloReporte').text('Reporte general de notas');
+
+                return {
+                    url: '/Reportes/GetNotas',
+                    headers: ['Curso', 'Legajo', 'Alumno', 'Asistencia', 'Nota', 'Estado'],
+                    columns: [
+                        { data: 'curso' },
+                        { data: 'legajo' },
+                        { data: 'alumno' },
+                        {
+                            data: null,
+                            render: function (row) {
+                                const pct = (row.clasesAsistidas * 100) / row.totalClases;
+                                if (row.totalClases === 0) return '0/0 (0%)';
+                                return `${row.clasesAsistidas}/${row.totalClases} (${pct.toFixed(0)}%)`;
+                            }
+                        },
+                        { data: 'notaFinal' },
+                        { data: 'estado' }
+                    ]
+                };
+            }
+
+            // =====================================================
+            // DICCIONARIO REPORTES
+            // =====================================================
+            const handlers = {
+                cursos: configurarCursos,
+                usuarios: configurarUsuarios,
+                inscriptos: configurarInscriptos,
+                notas: configurarNotas
+            };
+
+            // =====================================================
+            // EXPORTACIONES PDF
+            // =====================================================
+            const pdfHandlers = {
+                usuarios(ctx) { return `/Reportes/ExportUsuariosPdf?rol=${ctx.rol}`;},
+                cursos(ctx) { return `/Reportes/ExportCursosPdf?cursoId=${ctx.cursoId}&fechaDesde=${ctx.fechaDesde}&fechaHasta=${ctx.fechaHasta}`;},
+                inscriptos(ctx) { return `/Reportes/ExportInscriptosPdf?cursoId=${ctx.cursoId}`;},
+                notas(ctx) { return `/Reportes/ExportNotasPdf?cursoId=${ctx.cursoId}`;}
+            };
+
+            // =====================================================
+            // CAMBIO DE TIPO DE REPORTE
+            // =====================================================
+            $('#tipoReporte').change(function () {
+                const tipo = $(this).val();
+                const tieneReporte = tipo !== '';
+                $('#btnGenerarReporte').prop('disabled', !tieneReporte);
+                $('#panelFiltros').hide();
+                $('#contenedorCurso').hide();
+                $('#contenedorRol').hide();
+                $('#contenedorFechaDesde').hide();
+                $('#contenedorFechaHasta').hide();
+                $('#btnPdf').prop('disabled', true);
+
+                if (!tipo)
+                return;
+
+                $('#panelFiltros').show();
+
+                switch (tipo) {
+                    case 'cursos':
+                    $('#contenedorFechaDesde').show();
+                    $('#contenedorFechaHasta').show();
+                    break;
+
+                    case 'inscriptos':
+                    $('#contenedorCurso').show();
+                    break;
+                    case 'notas':
+                    $('#contenedorCurso').show();
+                    break;
+
+                    case 'usuarios':
+                    $('#contenedorRol').show();
+                    break;
+                }
+            });
+
+            $('#tipoReporte').trigger('change');
+
+            // =====================================================
+            // GENERAR REPORTE
+            // =====================================================
+            $('#btnGenerarReporte').click(function () {
+                const ctx = obtenerContexto();
+
+                if (!ctx.tipo) {
+                    showToast('Debe seleccionar un reporte.', 'warning');
+                    return;
+                }
+
+                const handler = handlers[ctx.tipo];
+
+                if (!handler) {
+                    console.error(`Tipo no soportado: ${ctx.tipo}`);
+                    return;
+                }
+
+                const { url, headers, columns } = handler(ctx);
+
+                $('#mensajeInicial').hide();
+                $('#contenedorTabla').show();
+
+                if ($.fn.DataTable.isDataTable('#tablaReportes')) {
+                    $('#tablaReportes').DataTable().destroy();
+                    $('#tablaReportes thead tr').empty();
+                    $('#tablaReportes tbody').empty();
+                }
+
+                headers.forEach(h => {
+                    $('#tablaReportes thead tr').append(`<th>${h}</th>`);
+                });
+
+                tablaReportes = $('#tablaReportes').DataTable({
+                    responsive: true,
+                    destroy: true,
+                    drawCallback: function () {
+                        const total = this.api().rows().count();
+                        $('#totalRegistros').text(`${total} registros`);
+                        $('#btnPdf').prop('disabled', total === 0);
+                    },
+                    ajax: {
+                        url: url,
+                        dataSrc: 'data'
+                    },
+                    columns: columns,
+                    language: {url: 'https://cdn.datatables.net/plug-ins/2.3.8/i18n/es-AR.json'}
+                });
+
+            });
+
+            // =====================================================
+            // EXPORTAR PDF
+            // =====================================================
+            $('#btnPdf').click(function (e) {
+                e.preventDefault();
+                const ctx = obtenerContexto();
+                const handler = pdfHandlers[ctx.tipo];
+
+                if (!handler)
+                return;
+
+                window.location.href = handler(ctx);
+            });
+
+        });
+    </script>
+}

@@ -1,0 +1,146 @@
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Kurse</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Kurse.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://cdn.datatables.net/v/dt/dt-2.3.8/datatables.min.css" rel="stylesheet" integrity="sha384-1BvCnyKidMPIGQGjvMn+w+90hHBhYJtF+R7os4NX2Abe7tSxWQadHRTSH5qb559A" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.8/css/dataTables.dataTables.css" />
+</head>
+<body>
+    <div class="d-flex">
+        <div id="sidebar"
+             class="sidebar text-white p-3">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-primary rounded-4 d-flex align-items-center justify-content-center" style="width:45px;height:45px;min-width:45px;">
+                        <i class="bi bi-mortarboard-fill text-white"></i>
+                    </div>
+                    <div class="sidebar-text">
+                        <h5 class="mb-0 fw-bold text-white">Kurse</h5>
+                        <small class="text-secondary">Gestión Académica</small>
+                    </div>
+                </div>
+            </div>
+
+            <ul class="nav flex-column gap-2">
+                @if (User.IsInRole(RoleConstants.Administrador) || User.IsInRole(RoleConstants.Administrativo))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-white d-flex align-items-center gap-2 @(currentController == "Usuarios" ? "active-sidebar" : "")" asp-controller="Usuarios" asp-action="Index">
+                            <i class="bi bi-people"></i><span class="sidebar-text"> Usuarios</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white d-flex align-items-center gap-2 @(currentController == "Cursos" ? "active-sidebar" : "")" asp-controller="Cursos" asp-action="Index">
+                            <i class="bi bi-journal-bookmark"></i><span class="sidebar-text"> Cursos</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white d-flex align-items-center gap-2 @(currentController == "Reportes" ? "active-sidebar" : "")" asp-controller="Reportes" asp-action="Index">
+                            <i class="bi bi-bar-chart"></i><span class="sidebar-text"> Reportes</span>
+                        </a>
+                    </li>
+                }
+
+                @if (User.IsInRole(RoleConstants.Profesor))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-white d-flex align-items-center gap-2 @(currentController == "Cursos" ? "active-sidebar" : "")" asp-controller="Cursos" asp-action="MisCursos">
+                            <i class="bi bi-journal-text"></i><span class="sidebar-text"> Mis Cursos</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white d-flex align-items-center gap-2 @(currentController == "Reportes" ? "active-sidebar" : "")" asp-controller="Reportes" asp-action="Index">
+                            <i class="bi bi-bar-chart"></i><span class="sidebar-text"> Reportes</span>
+                        </a>
+                    </li>
+                }
+
+                @if (User.IsInRole(RoleConstants.Alumno))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-white d-flex align-items-center gap-2 @(currentAction == "OfertaAcademica" ? "active-sidebar" : "")" asp-controller="Alumnos" asp-action="OfertaAcademica">
+                            <i class="bi bi-bar-chart"></i><span class="sidebar-text"> Oferta Académica</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white d-flex align-items-center gap-2 @(currentAction == "HistoriaAcademica" ? "active-sidebar" : "")" asp-controller="Alumnos" asp-action="HistoriaAcademica">
+                            <i class="bi bi-mortarboard"></i><span class="sidebar-text"> Historia Académica</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <div class="flex-grow-1">
+            <nav class="topbar navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow px-4 mb-3">
+                <div class="container-fluid">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Bienvenido</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                        <ul class="navbar-nav flex-grow-1"></ul>
+                        <partial name="_LoginPartial" />
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid p-4">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalPerfil" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="contenidoModalPerfil">
+            </div>
+        </div>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; @DateTime.Now.Year - Gestión de Cursos Kurse -
+        </div>
+    </footer>
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+        <div id="toastMensaje" class="toast align-items-center text-white bg-success @TempData["ToastClass"] border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    @TempData["ToastMessage"]
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+    <form id="antiforgery-form" style="display:none">
+        @Html.AntiForgeryToken()
+    </form>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.datatables.net/v/dt/dt-2.3.8/datatables.min.js" integrity="sha384-kjkli48Tmhwhaghq0IIRm8gFmMdnihfu1ywAOyyGWYMsoZZi/6AX2fWzpsqahoFw" crossorigin="anonymous"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/cursos.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    @if (TempData["ToastMessage"] != null)
+    {
+        <script>
+            window.toastMessage = '@TempData["ToastMessage"]';
+        </script>
+    }
+</body>
+</html>

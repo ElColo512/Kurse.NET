@@ -1,0 +1,228 @@
+﻿@model CursoDetailsViewModel
+
+<div class="row g-4">
+    <div class="col-md-3">
+        <div class="card detail-card shadow-sm h-100">
+            <div class="card-body">
+                <div class="card-title">Código</div>
+
+                <div class="fs-5 fw-semibold">
+                    <i class="bi bi-upc-scan me-2"></i>
+                    @Model.Codigo
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-9">
+        <div class="card detail-card shadow-sm h-100">
+            <div class="card-body">
+                <div class="card-title">Curso</div>
+
+                <div class="fs-5 fw-semibold">
+                    <i class="bi bi-journal-bookmark me-2"></i>
+                    @Model.NombreCurso
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card detail-card shadow-sm h-100">
+            <div class="card-body">
+                <div class="card-title">Profesor</div>
+
+                <div class="fs-5">
+                    <i class="bi bi-person-video3 me-2"></i>
+                    @Model.Profesor
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card detail-card shadow-sm h-100">
+            <div class="card-body">
+                <div class="card-title">Estado</div>
+                @{
+                    string badgeClass = Model.EstadoCurso switch
+                    {
+                        "Pendiente" => "bg-warning text-dark",
+                        "Autorizado" => "bg-success",
+                        "Rechazado" => "bg-danger",
+                        "Cancelado" => "bg-secondary",
+                        "Finalizado" => "bg-primary",
+                        _ => "bg-dark"
+                    };
+                }
+
+                <span class="badge @badgeClass fs-6 px-3 py-2">@Model.EstadoCurso</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card detail-card shadow-sm h-100">
+            <div class="card-body">
+                <div class="card-title">Horario</div>
+                <span class="fw-semibold">@Model.HoraInicio.ToString("HH:mm") - @Model.HoraFin.ToString("HH:mm")</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="card detail-card shadow-sm h-100">
+            <div class="card-body">
+                <div class="card-title">Días</div>
+                @if (Model.DiasDictado.Any())
+                {
+                    <div class="d-flex flex-wrap gap-1">
+                        @foreach (var dia in Model.DiasDictado)
+                        {
+                            <span class="badge bg-info-subtle">@dia</span>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <span class="text-muted">No especificado</span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card detail-card shadow-sm h-100">
+            <div class="card-body">
+                <div class="card-title">Fecha Inicio</div>
+
+                <div class="fs-5">
+                    <i class="bi bi-calendar-event me-2"></i>
+                    @Model.FechaInicio
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card detail-card shadow-sm h-100">
+            <div class="card-body">
+                <div class="card-title">Fecha Fin</div>
+
+                <div class="fs-5">
+                    <i class="bi bi-calendar-check me-2"></i>
+                    @Model.FechaFin
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card detail-card shadow-sm h-100">
+            <div class="card-body">
+                <div class="card-title">Lugar</div>
+
+                <div class="fs-5">
+                    <i class="bi bi-geo-alt me-2"></i>
+                    @Model.LugarDictado
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card detail-card shadow-sm h-100">
+            <div class="card-body">
+                <div class="card-title">Cupo Máximo</div>
+                <div class="fs-5">
+                    <i class="bi bi-people me-2"></i>
+                    @Model.CupoMaximo alumnos
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="card detail-card shadow-sm h-100">
+            <div class="card-body">
+                <div class="card-title">Clases</div>
+                <div class="fs-5">
+                    <i class="bi bi-list-ol me-2"></i>
+                    @Model.CantidadClases
+                    <small class="text-muted">clases</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="card detail-card shadow-sm h-100">
+            <div class="card-body">
+                <div class="card-title">Duración</div>
+
+                <div class="fs-5">
+                    <i class="bi bi-hourglass-split me-2"></i>
+                    @Model.DuracionHoras
+                    <small class="text-muted">horas</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="card detail-card shadow-sm h-100">
+            <div class="card-body">
+                <div class="card-title">Arancel</div>
+
+                <div class="fs-5">
+                    <i class="bi bi-cash-coin me-2"></i>
+                    @(Model.Arancelado ? $"$ {Model.Arancel:N0}" : "Sin costo")
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card detail-card shadow-sm">
+            <div class="card-body">
+                <div class="card-title">Tipo de aprobación</div>
+
+                <div class="fs-5">
+                    <i class="bi bi-award me-2"></i>
+                    @Model.TipoAprobacion
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="accordion mt-4" id="accordionContenido">
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#contenidoCollapse">Contenido del Curso</button>
+        </h2>
+        <div id="contenidoCollapse" class="accordion-collapse collapse">
+            <div class="accordion-body">
+                @if (string.IsNullOrWhiteSpace(Model.ContenidoCurso))
+                {
+                    <span class="text-muted">No se registró contenido para este curso.</span>
+                }
+                else
+                {
+                    @Model.ContenidoCurso
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.MotivoRechazo))
+{
+    <div class="alert alert-warning mt-4">
+        <h6 class="mb-2"><i class="bi bi-exclamation-triangle-fill me-2"></i> Motivo del rechazo</h6>
+        <p class="mb-0">
+            @Model.MotivoRechazo
+        </p>
+    </div>
+}

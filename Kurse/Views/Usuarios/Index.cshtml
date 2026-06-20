@@ -1,0 +1,142 @@
+﻿@{
+    var roles = ViewBag.Roles as List<string>;
+}
+
+<div class="card shadow">
+    @await Html.PartialAsync("_CardHeader",
+    new CardHeaderViewModel
+    {
+        Title = "Usuarios",
+        ShowButton = true,
+        ButtonText = "Nuevo Usuario",
+        ButtonUrl = "/Usuarios/Create"
+    })
+
+    <div class="card-body">
+        <div class="d-flex align-items-center gap-4 flex-wrap mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <label class="form-label mb-0">Rol</label>
+                <select id="filtroRol" asp-items="ViewBag.Roles" class="form-select w-auto">
+                    <option value="">Todos</option>
+                </select>
+            </div>
+
+      
+            @if (User.IsInRole("Administrador"))
+            {
+                <div class="form-check mb-0">
+                    <input class="form-check-input" type="checkbox" id="mostrarInactivos">
+                    <label class="form-check-label" for="mostrarInactivos">Mostrar inactivos</label>
+                </div>
+            }
+        </div>
+        @await Component.InvokeAsync("DataTable",
+        new DataTableViewModel
+        {
+            TableId = "tablaUsuarios",
+            Columns = new()
+            {
+                "Legajo",
+                "Nombre y Apellido",
+                "DNI",
+                "Email",
+                "Teléfono",
+                "Información Académica",
+                "Estado"
+            },
+            ShowActions = true
+        })
+    </div>
+</div>
+
+<div class="modal fade" id="modalUsuario" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="contenidoModal">
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            let columnas = [
+                { data: 'legajo' },
+                { data: 'nombreCompleto' },
+                { data: 'dni' },
+                { data: 'email' },
+                { data: 'telefono' },
+                { data: 'campoExtra' },
+                {
+                    data: 'activo',
+                    render: function(data) {
+                        return data ? '<span class="badge bg-success">Activo</span>' : '<span class="badge bg-danger">Inactivo</span>';
+                    }
+                },
+                {
+                    data: 'id',
+                    orderable: false,
+                    searchable: false,
+                    render: function (data, type, row) {
+                        const disabled = !row.activo ? 'disabled' : '';
+                        return `
+                        <div class="d-flex gap-1">
+                        <button class="btn btn-info btn-sm btn-details"  title="Ver detalle" data-id="${data}"><i class="bi bi-eye"></i></button>
+                        <button class="btn btn-warning btn-sm btn-edit"  title="Editar Usuario" data-id="${data}"><i class="bi bi-pencil-square"></i></button>
+                        <button class="btn btn-danger btn-sm btn-delete" title="Eliminar Usuario" data-id="${data}" data-name="${row.nombreCompleto}" data-description="Legajo: ${row.legajo}" ${disabled}><i class="bi bi-trash"></i></button>
+                        </div>
+                        `;
+                    }
+                }
+            ];
+
+            initializeCrudTable({
+                tableId: 'tablaUsuarios',
+                ajaxUrl: '/Usuarios/GetAll',
+                columns: columnas,
+                filters: [
+                    {
+                        selector: '#filtroRol',
+                        param: 'rol'
+                    },
+                    {
+                        selector: '#mostrarInactivos',
+                        param: 'mostrarInactivos'
+                    }
+                ]
+            });
+        });
+
+        initializeDetailsModal({
+            buttonClass: '.btn-details',
+            url: '/Usuarios/Details',
+            modalId: 'modalUsuario',
+            contentContainer: '#contenidoModal'
+        });
+
+        initializeEditModal({
+            buttonClass: '.btn-edit',
+            url: '/Usuarios/Edit',
+            modalId: 'modalUsuario',
+            contentContainer: '#contenidoModal',
+            formSelector: '#formEditUsuario',
+            onLoad: function () {
+                initializeRolFields('#rolSelect', '#tituloContainer', '#carreraContainer');
+            }
+        });
+
+        initializeAjaxForm({
+            formSelector: '#formEditUsuario',
+            modalId: 'modalUsuario',
+            tableId: '#tablaUsuarios',
+            contentContainer: '#contenidoModal'
+        });
+
+        initializeDelete({
+            buttonClass: '.btn-delete',
+            url: '/Usuarios/Delete',
+            tableId: '#tablaUsuarios',
+            title: '¿Eliminar usuario?',
+            text: 'Esta acción no se puede deshacer.'
+        });
+    </script>
+}

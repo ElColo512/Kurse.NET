@@ -1,0 +1,10 @@
+﻿@model CardHeaderViewModel
+
+<div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">@Model.Title</h5>
+
+    @if (Model.ShowButton)
+    {
+        <a href="@Model.ButtonUrl" class="btn btn-success"><i class="fa-solid fa-plus"></i>@Model.ButtonText</a>
+    }
+</div>

@@ -1,0 +1,217 @@
+﻿<div class="card shadow">
+    @await Html.PartialAsync("_CardHeader",
+        new CardHeaderViewModel
+        {
+            Title = "Cursos",
+            ShowButton = true,
+            ButtonText = "Nuevo Curso",
+            ButtonUrl = "/Cursos/Create"
+        })
+
+    <div class="card-body">
+        <div class="d-flex align-items-center gap-4 flex-wrap mb-3">
+            @if (User.IsInRole("Administrador"))
+            {
+                <div class="form-check mb-0">
+                    <input class="form-check-input" type="checkbox" id="mostrarInactivos">
+                    <label class="form-check-label" for="mostrarInactivos">Mostrar cursos cancelados</label>
+                </div>
+            }
+        </div>
+
+        @await Component.InvokeAsync("DataTable",
+            new DataTableViewModel
+            {
+                TableId = "tablaCursos",
+                Columns = new()
+                {
+                    "Curso",
+                    "Profesor",
+                    "Fecha Inicio",
+                    "Fecha Fin",
+                    "CupoMaximo",
+                    "Anotados",
+                    "Estado"
+                },
+
+                ShowActions = true
+            })
+    </div>
+</div>
+
+<div class="modal fade" id="modalCursos" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" id="contenidoModal">
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            let columnas = [
+                { data: 'nombreCurso' },
+                { data: 'profesor' },
+                { data: 'fechaInicio', render: function (data) { return formatDate(data);}},
+                { data: 'fechaFin', render: function (data) { return formatDate(data);}},
+                { data: 'cupoMaximo' },
+                { data: 'anotados' },
+                {
+                    data: 'estadoCurso',
+                    render: function (data) {
+                        const clases = {
+                            Pendiente: 'bg-warning',
+                            Autorizado: 'bg-success',
+                            Rechazado: 'bg-danger',
+                            Finalizado: 'bg-primary',
+                            Cancelado: 'bg-secondary'
+                        };
+
+                        return `<span class="badge ${clases[data] || 'bg-secondary'}">${data}</span>`;
+                    }
+                },
+                {
+                    data: 'cursoId',
+                    orderable: false,
+                    searchable: false,
+                    render: function (data, type, row) {
+                        const esProfesor = @User.IsInRole(RoleConstants.Profesor).ToString().ToLower();
+                        if (esProfesor) {
+                            let opciones = `
+                            <li><a class="dropdown-item btn-details" href="#" data-id="${data}"><i class="bi bi-eye me-2"></i> Ver detalle</a></li>
+                            `;
+
+                            if (row.estadoCurso === 'Pendiente' || row.estadoCurso === 'Rechazado') {
+                                opciones += `
+                                <li><a class="dropdown-item btn-edit" href="#" data-id="${data}"><i class="bi bi-pencil-square me-2"></i> Editar curso</a></li>
+                                `;
+                            }
+
+                            if (row.estadoCurso === 'Autorizado') {
+                                opciones += `
+                                <li><a class="dropdown-item btn-acta" href="#" data-id="${data}"><i class="bi bi-journal-text me-2"></i> Acta</a></li>
+                                <li><a class="dropdown-item btn-finalizar" href="#" data-id="${data}"><i class="bi bi-check-circle me-2"></i> Finalizar curso</a></li>
+                                `;
+                            }
+
+                            return `
+                            <div class="dropdown">
+                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">Acciones</button>
+                            <ul class="dropdown-menu">${opciones}</ul>
+                            </div>
+                            `;
+                        }
+
+                        let opciones = `
+                        <li><a class="dropdown-item btn-details" href="#" data-id="${data}"><i class="bi bi-eye me-2"></i> Ver detalle</a></li>
+                        <li><a class="dropdown-item btn-edit" href="#" data-id="${data}"><i class="bi bi-pencil-square me-2"></i> Editar</a></li>
+                        `;
+
+                        if (row.estadoCurso === 'Pendiente') {
+                            opciones += `
+                            <li><a class="dropdown-item btn-revisar" href="#" data-id="${data}"><i class="bi bi-check2-square me-2"></i> Revisar solicitud</a></li>
+                            `;
+                        }
+
+                        if (row.estadoCurso !== 'Cancelado') {
+                            opciones += `
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger btn-delete" href="#" data-id="${data}" data-name="${row.nombreCurso}" data-description="${row.profesor}"><i class="bi bi-trash me-2"></i> Cancelar curso</a></li>
+                            `;
+                        }
+
+                        if (row.estadoCurso === 'Autorizado') {
+                            opciones += `
+                            <li><a class="dropdown-item btn-finalizar" href="#" data-id="${data}"><i class="bi bi-check-circle me-2"></i> Finalizar curso</a></li>
+                            `;
+                        }
+
+                        return `
+                        <div class="d-flex gap-1">
+                        <button class="btn btn-success btn-sm btn-inscriptos" title="Ver Inscriptos" data-id="${data}"><i class="bi bi-people"></i></button>
+                        <button class="btn btn-secondary btn-sm btn-acta" title="Acta" data-id="${data}"><i class="bi bi-journal-text"></i></button>
+                        <div class="dropdown">
+                        <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                        <ul class="dropdown-menu">${opciones}</ul>
+                        </div>
+                        </div>
+                        `;
+                    }
+            }
+            ];
+            initializeCrudTable({
+                tableId: 'tablaCursos',
+                ajaxUrl: '/Cursos/GetAll',
+                columns: columnas,
+                 filters: [
+                    {
+                        selector: '#mostrarInactivos',
+                        param: 'mostrarInactivos'
+                    }
+                ]
+            });
+        });
+
+        initializeDetailsModal({
+            buttonClass: '.btn-details',
+            url: '/Cursos/Details',
+            modalId: 'modalCursos',
+            contentContainer: '#contenidoModal'
+        });
+
+        initializeEditModal({
+            buttonClass: '.btn-edit',
+            url: '/Cursos/Edit',
+            modalId: 'modalCursos',
+            contentContainer: '#contenidoModal',
+            formSelector: '#formEditCurso',
+            onLoad: function () {
+                initializeToggleField('#chkArancelado', '#contenedorArancel', '#Arancel');
+            }
+        });
+
+        initializeAjaxForm({
+            formSelector: '#formEditCurso',
+            modalId: 'modalCursos',
+            tableId: '#tablaCurso',
+            contentContainer: '#contenidoModal'
+        });
+
+        initializeInscriptosModal({
+            buttonClass: '.btn-inscriptos',
+            url: '/Cursos/Inscriptos',
+            modalId: 'modalCursos',
+            contentContainer: '#contenidoModal'
+        });
+
+        initializeActaModal({
+            buttonClass: '.btn-acta',
+            url: '/Cursos/Acta',
+            modalId: 'modalCursos',
+            contentContainer: '#contenidoModal'
+        });
+
+        initializeDelete({
+            buttonClass: '.btn-delete',
+            url: '/Cursos/Delete',
+            tableId: '#tablaCursos',
+            title: '¿Eliminar Curso?',
+            text: 'Esta acción no se puede deshacer.'
+        });
+
+        $(document).ready(function () {
+            initializeInscriptosModal({
+                buttonClass: '.btn-inscriptos',
+                modalId: '#modalCursos',
+                contentContainer: '#contenidoModal'
+            });
+        });
+
+        initializeReviewModal({
+            buttonClass: '.btn-revisar',
+            url: '/Cursos/Revisar',
+            modalId: 'modalCursos',
+            contentContainer: '#contenidoModal'
+        });
+    </script>
+}
