@@ -55,7 +55,7 @@
                 @if (User.IsInRole(RoleConstants.Profesor))
                 {
                     <li class="nav-item">
-                        <a class="nav-link text-white d-flex align-items-center gap-2 @(currentController == "Cursos" ? "active-sidebar" : "")" asp-controller="Cursos" asp-action="MisCursos">
+                        <a class="nav-link text-white d-flex align-items-center gap-2 @(currentController == "Cursos" ? "active-sidebar" : "")" asp-controller="Cursos" asp-action="Index">
                             <i class="bi bi-journal-text"></i><span class="sidebar-text"> Mis Cursos</span>
                         </a>
                     </li>
